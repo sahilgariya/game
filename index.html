@@ -51,8 +51,13 @@ Coins: <span id="coin">0</span>
 </div>
 
 <script>
-const canvas = window.getElementById('game');
+const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+function setCanvasSize() {
+    canvas.width=Math.max(window.innerWidth,window.innerHeight);
+    canvas.height=Math.min(window.innerWidth,window.innerHeight);
+}
+setCanvasSize();                     
 ctx.textAlign = 'center';
 ctx.textBaseline = 'middle';
 const W = canvas.width, H = canvas.height;
@@ -84,6 +89,12 @@ let buffs = {}; // Active buffs with timers
 function rand(min,max){return Math.random()*(max-min)+min;}
 function dist(a,b){return Math.hypot(a.x-b.x, a.y-b.y);}
 function createPlayer(){
+let player = {
+  x: canvas.width * 0.1,
+  y: canvas.height / 2,
+  width: 50,
+  height: 50
+};    
     return { 
         x: W/2, y: H/2, r: 20, health: 100, fireCooldown: 0, speed: 2.4, 
         speedBoostTimer: 0, shieldTimer: 0, buffFireRate: 0, damageCooldown: 0
@@ -365,5 +376,6 @@ document.addEventListener('keyup', e=>{
 </script>
 </body>
 </html>
+
 
 
