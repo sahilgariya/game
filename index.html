@@ -51,7 +51,11 @@ Coins: <span id="coin">0</span>
 </div>
 
 <script>
-const canvas = document.getElementById('gameCanvas');
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+
 const W = canvas.width, H = canvas.height;
 const scoreEl = document.getElementById('score');
 const waveEl = document.getElementById('wave');
@@ -83,7 +87,7 @@ function dist(a,b){return Math.hypot(a.x-b.x, a.y-b.y);}
 function createPlayer(){
     return { 
         x: W/2, y: H/2, r: 20, health: 100, fireCooldown: 0, speed: 2.4, 
-        speedBoostTimer: 3, shieldTimer: 3, buffFireRate: 0, damageCooldown: 0
+        speedBoostTimer: 0, shieldTimer: 0, buffFireRate: 0, damageCooldown: 0
     };
 }
 
@@ -362,7 +366,3 @@ document.addEventListener('keyup', e=>{
 </script>
 </body>
 </html>
-
-
-
-
