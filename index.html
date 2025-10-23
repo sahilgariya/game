@@ -51,6 +51,130 @@ Coins: <span id="coin">0</span>
 </div>
 
 <script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let width = window.innerWidth * 0.6;   // smaller width for vertical
+let height = window.innerHeight;       // full height
+canvas.width = width;
+canvas.height = height;
+
+// Player
+let player = { x: width/2, y: height - 100, size: 40, health: 100, speed: 5 };
+
+// Enemies
+let enemies = [];
+let bullets = [];
+let coins = [];
+let score = 0;
+let coinCount = 0;
+let gameOver = false;
+
+// Spawn enemy at top
+function spawnEnemy() {
+    let x = Math.random() * width;
+    enemies.push({ x, y: -50, size: 40, health: 20 });
+}
+
+// Spawn coins
+function spawnCoin() {
+    let x = Math.random() * width;
+    let y = Math.random() * height/2;
+    coins.push({ x, y, size: 20 });
+}
+
+// Player movement: vertical game, joystick or keyboard
+let joystick = { x: 0, y: 0, active: false };
+let keys = {};
+
+window.addEventListener('keydown', e => keys[e.key] = true);
+window.addEventListener('keyup', e => keys[e.key] = false);
+
+function shoot() {
+    bullets.push({ x: player.x + player.size/2, y: player.y, size: 10, speed: 10 });
+}
+
+// Game loop
+function update() {
+    if(gameOver) return;
+
+    // Player movement
+    if(keys['ArrowLeft']) player.x -= player.speed;
+    if(keys['ArrowRight']) player.x += player.speed;
+    if(keys['ArrowUp']) player.y -= player.speed;
+    if(keys['ArrowDown']) player.y += player.speed;
+
+    // Boundaries
+    player.x = Math.max(0, Math.min(width - player.size, player.x));
+    player.y = Math.max(0, Math.min(height - player.size, player.y));
+
+    // Clear canvas
+    ctx.clearRect(0,0,width,height);
+
+    // Draw player
+    ctx.font = `${player.size}px Arial`;
+    ctx.fillText("😀", player.x, player.y + player.size);
+
+    // Move enemies down (vertical)
+    enemies.forEach((e,i) => {
+        e.y += 2;
+        ctx.font = `${e.size}px Arial`;
+        ctx.fillText("🤡", e.x, e.y + e.size);
+
+        // Collision with player
+        let dx = player.x - e.x;
+        let dy = player.y - e.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < e.size){
+            player.health -= 0.5;
+        }
+
+        // Remove enemies below screen
+        if(e.y > height + 50) enemies.splice(i,1);
+    });
+
+    // Draw coins
+    coins.forEach((c,i) => {
+        ctx.font = `${c.size}px Arial`;
+        ctx.fillText("💰", c.x, c.y + c.size);
+
+        let dx = player.x - c.x;
+        let dy = player.y - c.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < player.size){
+            coinCount++;
+            coins.splice(i,1);
+        }
+    });
+
+    // Health bar update
+    document.getElementById('health-bar').style.width = player.health + "px";
+    document.getElementById('score').textContent = Math.floor(score);
+    document.getElementById('coins').textContent = coinCount;
+
+    if(player.health <=0){
+        gameOver = true;
+        alert("Game Over!");
+    }
+
+    score += 0.1;
+    requestAnimationFrame(update);
+}
+
+// Initial spawn
+for(let i=0;i<5;i++) spawnEnemy();
+for(let i=0;i<5;i++) spawnCoin();
+
+update();
+
+// Resize canvas on window resize
+window.addEventListener('resize', () => {
+    width = window.innerWidth * 0.6;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+});
+
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 ctx.textAlign = 'center';
@@ -366,3 +490,4 @@ document.addEventListener('keyup', e=>{
 </script>
 </body>
 </html>
+
