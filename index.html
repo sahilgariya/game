@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Emoji Survival - Advanced</title>
 <style>
 html,body{height:100%;margin:0;background:#0b1020;font-family:sans-serif;overflow:hidden}
@@ -51,6 +51,11 @@ Coins: <span id="coin">0</span>
 </div>
 
 <script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+
 const W = canvas.width, H = canvas.height;
 const scoreEl = document.getElementById('score');
 const waveEl = document.getElementById('wave');
@@ -80,12 +85,6 @@ let buffs = {}; // Active buffs with timers
 function rand(min,max){return Math.random()*(max-min)+min;}
 function dist(a,b){return Math.hypot(a.x-b.x, a.y-b.y);}
 function createPlayer(){
-let player = {
-  x: canvas.width * 0.1,
-  y: canvas.height / 2,
-  width: 50,
-  height: 50
-};    
     return { 
         x: W/2, y: H/2, r: 20, health: 100, fireCooldown: 0, speed: 2.4, 
         speedBoostTimer: 0, shieldTimer: 0, buffFireRate: 0, damageCooldown: 0
@@ -288,7 +287,7 @@ function draw(){
 }
 
 function itemIcon(type){
-    const icons = {medicine:'💊',speed:'⚡',shield:'🛡️',bullet:'🔹',coin:'🟡',bomb:'💣',freeze:'❄️',doubleCoin:'💰',laser:'🔥',magnet:'🧲',armor:'🦾',extraLife:'❤️'};
+    const icons = {medicine:'💊',speed:'⚡',shield:'🛡️',bullet:'🔹',coin:'💰',bomb:'💣',freeze:'❄️',doubleCoin:'🪙🪙',laser:'🔥',magnet:'🧲',armor:'🦾',extraLife:'❤️'};
     return icons[type]||'?';
 }
 
@@ -367,10 +366,3 @@ document.addEventListener('keyup', e=>{
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
